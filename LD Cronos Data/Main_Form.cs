@@ -628,7 +628,7 @@ namespace LD_Cronos_Data
                 try
                 {
                     label_count.Text = __timer_count--.ToString();
-                    if (label_count.Text == "9")
+                    if (label_count.Text == "-1")
                     {
                         label_status.Text = "Running";
                         panel_status.Visible = true;
