@@ -628,7 +628,7 @@ namespace LD_Cronos_Data
                 try
                 {
                     label_count.Text = __timer_count--.ToString();
-                    if (label_count.Text == "-1")
+                    if (label_count.Text == "9")
                     {
                         label_status.Text = "Running";
                         panel_status.Visible = true;
@@ -1924,7 +1924,7 @@ namespace LD_Cronos_Data
                     if (_updated_date.ToString() != "")
                     {
                         DateTime _updated_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_updated_date.ToString()) / 1000d)).ToLocalTime();
-                        _updated_date = _updated_date_replace.ToString("yyyy-MM-dd");
+                        _updated_date = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                         _time = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                     }
                     else
@@ -2059,6 +2059,9 @@ namespace LD_Cronos_Data
                     {
                         _fd_date = "";
                     }
+
+                    DateTime _updated_date_replace_ = DateTime.ParseExact(_updated_date.ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    _updated_date = _updated_date_replace_.ToString("yyyy-MM-dd");
 
                     if (_display_count == 1)
                     {
@@ -2234,7 +2237,7 @@ namespace LD_Cronos_Data
                     if (_updated_date.ToString() != "")
                     {
                         DateTime _updated_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_updated_date.ToString()) / 1000d)).ToLocalTime();
-                        _updated_date = _updated_date_replace.ToString("yyyy-MM-dd");
+                        _updated_date = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                         _time = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                     }
                     else
@@ -2339,6 +2342,9 @@ namespace LD_Cronos_Data
                     string _new = "";
                     string _reactivated = "";
                     string _fd_date = "";
+
+                    DateTime _updated_date_replace_ = DateTime.ParseExact(_updated_date.ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    _updated_date = _updated_date_replace_.ToString("yyyy-MM-dd");
 
                     if (__detect_header)
                     {
