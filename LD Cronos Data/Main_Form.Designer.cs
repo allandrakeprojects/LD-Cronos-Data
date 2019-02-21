@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Form));
             this.panel_header = new System.Windows.Forms.Panel();
             this.panel = new System.Windows.Forms.Panel();
             this.label_title = new System.Windows.Forms.Label();
@@ -650,6 +651,7 @@
             this.label_getdatacount.TabIndex = 34;
             this.label_getdatacount.Text = "-";
             this.label_getdatacount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_getdatacount.Visible = false;
             // 
             // label_count
             // 
@@ -777,6 +779,7 @@
             this.Controls.Add(this.panel_header);
             this.Controls.Add(this.label_getdatacount);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main_Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LD Cronos Data";
