@@ -739,6 +739,38 @@ namespace LD_Cronos_Data
                     }
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    if (_vip.ToString() == "1")
+                    {
+                        _vip = "New Member";
+                    }
+                    else if (_vip.ToString() == "1")
+                    {
+                        _vip = "VIP 1";
+                    }
+                    else if (_vip.ToString() == "2")
+                    {
+                        _vip = "VIP 2";
+                    }
+                    else if (_vip.ToString() == "3")
+                    {
+                        _vip = "VIP 3";
+                    }
+                    else if (_vip.ToString() == "4")
+                    {
+                        _vip = "VIP 4";
+                    }
+                    else if (_vip.ToString() == "99")
+                    {
+                        _vip = "Bonus Hunter";
+                    }
+                    else if (_vip.ToString().ToLower().Contains("test"))
+                    {
+                        _vip = "Test";
+                    }
+                    else
+                    {
+                        _vip = "";
+                    }
                     // -----
                     JToken _affiliate_url = __jo.SelectToken("$.aaData[" + i + "].affiliateUrl").ToString();
                     // -----
@@ -783,7 +815,7 @@ namespace LD_Cronos_Data
                     if (_registration_date.ToString() != "")
                     {
                         DateTime _registration_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_registration_date.ToString()) / 1000d)).ToLocalTime();
-                        _registration_date = _registration_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
+                        _registration_date = _registration_date_replace.ToString("yyyy-MM-dd");
                         _month_reg = _registration_date_replace.ToString("yyyy-MM-01");
 
                     }
@@ -834,7 +866,7 @@ namespace LD_Cronos_Data
                         var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", "Brand", "Username", "Name", "Status", "Date Registered", "Last Login Date", "Last Deposit Date", "Contact Number", "Email", "VIP Level", "Registration Date", "Month Reg", "First Deposit Date", "First Deposit Month", "IP Address", "Affiliate", "Source", "Date of Birth", "User ID", "Wechat", "QQ");
                         _DATA.AppendLine(header);
                     }
-                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", __brand_code, "\"" + _username + "\"", "\"" + _name + "\"", "\"" + _status + "\"", "\"" + _registration_date + "\"", "\"" + _last_login_date + "\"", "\"" + _ld_date + "\"", "\"" + _contact_number + "\"", "\"" + _email + "\"", "\"" + _vip + "\"", "\"" + _registration_date + "\"", "\"" + _month_reg + "\"", "\"" + _fd_date + "\"", "\"" + _first_fd_month + "\"", "\"" + _ip_address + "\"", "\"" + _affiliate_url + "\"", "\"" + _source + "\"", "\"" + _dob + "\"", "\"" + "" + "\"", "\"" + "" + "\"", "\"" + "" + "\"");
+                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", __brand_code, "\"" + _username + "\"", "\"" + _name + "\"", "\"" + _status + "\"", "\"" + _registration_date + "\"", "\"" + _last_login_date + "\"", "\"" + _ld_date + "\"", "\"" + "86" + _contact_number + "\"", "\"" + _email + "\"", "\"" + _vip + "\"", "\"" + _registration_date + "\"", "\"" + _month_reg + "\"", "\"" + _fd_date + "\"", "\"" + _first_fd_month + "\"", "\"" + _ip_address + "\"", "\"" + _affiliate_url + "\"", "\"" + _source + "\"", "\"" + _dob + "\"", "\"" + "" + "\"", "\"" + "" + "\"", "\"" + "" + "\"");
                     _DATA.AppendLine(data);
                 }
 
@@ -1046,6 +1078,38 @@ namespace LD_Cronos_Data
                     JToken _amount = __jo.SelectToken("$.aaData[" + i + "].bonus").ToString();
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    if (_vip.ToString() == "1")
+                    {
+                        _vip = "New Member";
+                    }
+                    else if (_vip.ToString() == "1")
+                    {
+                        _vip = "VIP 1";
+                    }
+                    else if (_vip.ToString() == "2")
+                    {
+                        _vip = "VIP 2";
+                    }
+                    else if (_vip.ToString() == "3")
+                    {
+                        _vip = "VIP 3";
+                    }
+                    else if (_vip.ToString() == "4")
+                    {
+                        _vip = "VIP 4";
+                    }
+                    else if (_vip.ToString() == "99")
+                    {
+                        _vip = "Bonus Hunter";
+                    }
+                    else if (_vip.ToString().ToLower().Contains("test"))
+                    {
+                        _vip = "Test";
+                    }
+                    else
+                    {
+                        _vip = "";
+                    }
                     // -----
                     JToken _updated_by = __jo.SelectToken("$.aaData[" + i + "].updater").ToString();
                     // ----- Transaction Time
@@ -1358,6 +1422,38 @@ namespace LD_Cronos_Data
                     }
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    if (_vip.ToString() == "1")
+                    {
+                        _vip = "New Member";
+                    }
+                    else if (_vip.ToString() == "1")
+                    {
+                        _vip = "VIP 1";
+                    }
+                    else if (_vip.ToString() == "2")
+                    {
+                        _vip = "VIP 2";
+                    }
+                    else if (_vip.ToString() == "3")
+                    {
+                        _vip = "VIP 3";
+                    }
+                    else if (_vip.ToString() == "4")
+                    {
+                        _vip = "VIP 4";
+                    }
+                    else if (_vip.ToString() == "99")
+                    {
+                        _vip = "Bonus Hunter";
+                    }
+                    else if (_vip.ToString().ToLower().Contains("test"))
+                    {
+                        _vip = "Test";
+                    }
+                    else
+                    {
+                        _vip = "";
+                    }
                     // -----
                     JToken _stake = __jo.SelectToken("$.aaData[" + i + "].sumBetAmount").ToString();
                     // -----
@@ -1834,6 +1930,38 @@ namespace LD_Cronos_Data
                     JToken _amount = __jo.SelectToken("$.aaData[" + i + "].amount").ToString();
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    if (_vip.ToString() == "1")
+                    {
+                        _vip = "New Member";
+                    }
+                    else if (_vip.ToString() == "1")
+                    {
+                        _vip = "VIP 1";
+                    }
+                    else if (_vip.ToString() == "2")
+                    {
+                        _vip = "VIP 2";
+                    }
+                    else if (_vip.ToString() == "3")
+                    {
+                        _vip = "VIP 3";
+                    }
+                    else if (_vip.ToString() == "4")
+                    {
+                        _vip = "VIP 4";
+                    }
+                    else if (_vip.ToString() == "99")
+                    {
+                        _vip = "Bonus Hunter";
+                    }
+                    else if (_vip.ToString().ToLower().Contains("test"))
+                    {
+                        _vip = "Test";
+                    }
+                    else
+                    {
+                        _vip = "";
+                    }
                     // -----
                     string _fd_date = await ___REGISTRATION_FIRSTDEPOSITAsync(_member.ToString());
                     string _ld_date = await ___REGISTRATION_LASTDEPOSITAsync(_member.ToString());
@@ -1880,9 +2008,17 @@ namespace LD_Cronos_Data
                     {
                         _status = "Approved";
                     }
-                    else if (_status.ToString() == "-2")
+                    else if (_status.ToString() == "-1" || _status.ToString() == "-2")
                     {
                         _status = "Rejected";
+                    }
+                    else if (_status.ToString() == "1")
+                    {
+                        _status = "Verified";
+                    }
+                    else if (_status.ToString() == "3")
+                    {
+                        _status = "On Hold";
                     }
                     else
                     {
@@ -2194,6 +2330,38 @@ namespace LD_Cronos_Data
                     JToken _amount = __jo.SelectToken("$.aaData[" + i + "].amount").ToString();
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    if (_vip.ToString() == "1")
+                    {
+                        _vip = "New Member";
+                    }
+                    else if (_vip.ToString() == "1")
+                    {
+                        _vip = "VIP 1";
+                    }
+                    else if (_vip.ToString() == "2")
+                    {
+                        _vip = "VIP 2";
+                    }
+                    else if (_vip.ToString() == "3")
+                    {
+                        _vip = "VIP 3";
+                    }
+                    else if (_vip.ToString() == "4")
+                    {
+                        _vip = "VIP 4";
+                    }
+                    else if (_vip.ToString() == "99")
+                    {
+                        _vip = "Bonus Hunter";
+                    }
+                    else if (_vip.ToString().ToLower().Contains("test"))
+                    {
+                        _vip = "Test";
+                    }
+                    else
+                    {
+                        _vip = "";
+                    }
                     // -----
                     JToken _status = __jo.SelectToken("$.aaData[" + i + "].status").ToString();
                     if (_status.ToString() == "0")
@@ -2204,9 +2372,17 @@ namespace LD_Cronos_Data
                     {
                         _status = "Approved";
                     }
-                    else if (_status.ToString() == "-2")
+                    else if (_status.ToString() == "-1" || _status.ToString() == "-2")
                     {
                         _status = "Rejected";
+                    }
+                    else if (_status.ToString() == "1")
+                    {
+                        _status = "Verified";
+                    }
+                    else if (_status.ToString() == "3")
+                    {
+                        _status = "On Hold";
                     }
                     else
                     {
@@ -2581,6 +2757,38 @@ namespace LD_Cronos_Data
                     JToken _amount = __jo.SelectToken("$.aaData[" + i + "].amount").ToString();
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    if (_vip.ToString() == "1")
+                    {
+                        _vip = "New Member";
+                    }
+                    else if (_vip.ToString() == "1")
+                    {
+                        _vip = "VIP 1";
+                    }
+                    else if (_vip.ToString() == "2")
+                    {
+                        _vip = "VIP 2";
+                    }
+                    else if (_vip.ToString() == "3")
+                    {
+                        _vip = "VIP 3";
+                    }
+                    else if (_vip.ToString() == "4")
+                    {
+                        _vip = "VIP 4";
+                    }
+                    else if (_vip.ToString() == "99")
+                    {
+                        _vip = "Bonus Hunter";
+                    }
+                    else if (_vip.ToString().ToLower().Contains("test"))
+                    {
+                        _vip = "Test";
+                    }
+                    else
+                    {
+                        _vip = "";
+                    }
                     // -----
                     JToken _updated_by = __jo.SelectToken("$.aaData[" + i + "].creator").ToString();
                     // ----- Transaction Time
