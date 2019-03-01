@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
@@ -13,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -35,7 +37,6 @@ namespace LD_Cronos_Data
         private string __display_length = "100000";
         private int __send = 0;
         private int __timer_count = 10;
-        private bool __is_close;
         private bool __is_login = false;
         private bool __is_start = false;
         private bool __is_autostart = true;
@@ -205,7 +206,6 @@ namespace LD_Cronos_Data
             DialogResult dr = MessageBox.Show("Exit the program?", __brand_code + " Cronos Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dr == DialogResult.Yes)
             {
-                __is_close = false;
                 Environment.Exit(0);
             }
         }
@@ -250,7 +250,7 @@ namespace LD_Cronos_Data
                         panel_loader.Visible = false;
                         label_navigate_up.Enabled = false;
 
-                        //SendITSupport("The application have been logout, please re-login again.");
+                        SendITSupport("The application have been logout, please re-login again.");
                         SendMyBot("The application have been logout, please re-login again.");
                         __send = 0;
                     }));
@@ -304,11 +304,12 @@ namespace LD_Cronos_Data
 
                     if (!__is_start)
                     {
+                        label_status.Text = "Waiting";
+                        
                         if (Properties.Settings.Default.______start_detect == "0")
                         {
                             button_start.Enabled = false;
                             panel_filter.Enabled = false;
-                            label_status.Text = "Waiting";
                         }
                         // registration
                         else if (Properties.Settings.Default.______start_detect == "1")
@@ -924,6 +925,7 @@ namespace LD_Cronos_Data
                                         Type.Missing,
                                         true);
                     worksheet.Columns[5].NumberFormat = "MM/dd/yyyy";
+                    worksheet.Columns[2].NumberFormat = "@";
                     Excel.Range usedRange = worksheet.UsedRange;
                     Excel.Range rows = usedRange.Rows;
                     int count = 0;
@@ -937,7 +939,7 @@ namespace LD_Cronos_Data
 
                             if (!string.IsNullOrEmpty(firstCellValue))
                             {
-                                row.Interior.Color = Color.FromArgb(236, 103, 5);
+                                row.Interior.Color = Color.FromArgb(255, 90, 1);
                                 row.Font.Color = Color.FromArgb(255, 255, 255);
                             }
 
@@ -994,7 +996,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -1344,7 +1346,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -1493,25 +1495,19 @@ namespace LD_Cronos_Data
                     string _month_ = DateTime.Now.Month.ToString();
                     string _year_ = DateTime.Now.Year.ToString();
                     string _year_month = _year_ + "-" + _month_;
-                    if (_fd_date != "" && _ld_date != "")
+                    string _current_month = DateTime.Now.ToString("MM/dd/yyyy");
+                    string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd");
+                    if (_fd_date == _current_month)
                     {
-                        DateTime _fd_date_ = DateTime.ParseExact(_fd_date, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                        DateTime _ld_date_ = DateTime.ParseExact(_ld_date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-                        var _last2months = DateTime.Today.AddMonths(-2);
-                        DateTime _last2months_ = DateTime.ParseExact(_last2months.ToString("yyyy-MM-dd"), "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                        if (_ld_date_ >= _last2months_)
-                        {
-                            _retained = "Yes";
-                        }
-                        else
-                        {
-                            _retained = "No";
-                        }
+                        _retained = "Not Retained";
+                    }
+                    else if (_ld_date == _last_month)
+                    {
+                        _retained = "Not Retained";
                     }
                     else
                     {
-                        _retained = "No";
+                        _retained = "Not Retained";
                     }
                     // ----- New Based on Reg && Reg Month
                     string _reg_month = await ___TURNOVER_REGMONTHsync(_member.ToString());
@@ -1612,8 +1608,6 @@ namespace LD_Cronos_Data
                         File.Delete(_folder_path_result_xlsx);
                     }
                     
-                    _DATA.ToString().Reverse();
-
                     File.WriteAllText(_folder_path_result, _DATA.ToString(), Encoding.UTF8);
 
                     Excel.Application app = new Excel.Application();
@@ -1641,7 +1635,7 @@ namespace LD_Cronos_Data
 
                             if (!string.IsNullOrEmpty(firstCellValue))
                             {
-                                row.Interior.Color = Color.FromArgb(236, 103, 5);
+                                row.Interior.Color = Color.FromArgb(255, 90, 1);
                                 row.Font.Color = Color.FromArgb(255, 255, 255);
                             }
 
@@ -1689,8 +1683,7 @@ namespace LD_Cronos_Data
                 {
                     panel_filter.Enabled = true;
                 }
-
-                // ghghghghghg
+                
                 __getdata_affiliatelist.Clear();
                 __getdata_bonuscode.Clear();
                 __start_datetime_elapsed = "";
@@ -1709,7 +1702,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -2258,7 +2251,6 @@ namespace LD_Cronos_Data
                     {
                         DateTime _submitted_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_submitted_date.ToString()) / 1000d)).ToLocalTime();
                         _submitted_date = _submitted_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
-                        _month = _submitted_date_replace.ToString("yyyy-MM-01");
                     }
                     else
                     {
@@ -2271,6 +2263,7 @@ namespace LD_Cronos_Data
                     {
                         DateTime _updated_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_updated_date.ToString()) / 1000d)).ToLocalTime();
                         _updated_date = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
+                        _month = _updated_date_replace.ToString("yyyy-MM-01");
                         _date = _updated_date_replace.ToString("yyyy-MM-dd");
                         _time = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                     }
@@ -2361,45 +2354,25 @@ namespace LD_Cronos_Data
                     string _reactivated = "";
                     if (_status.ToString() == "Approved" && !_member.ToString().ToLower().Contains("test"))
                     {
-                        if (_fd_date != "" && _ld_date != "")
+                        string _current_month = DateTime.Now.ToString("MM/dd/yyyy");
+                        string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd");
+                        if (_fd_date == _current_month)
                         {
-                            DateTime _fd_date_ = DateTime.ParseExact(_fd_date, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                            DateTime _ld_date_ = DateTime.ParseExact(_ld_date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-                            var _last2months = DateTime.Today.AddMonths(-2);
-                            DateTime _last2months_ = DateTime.ParseExact(_last2months.ToString("yyyy-MM-dd"), "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                            if (_ld_date_ >= _last2months_)
-                            {
-                                _retained = "Retained";
-                            }
-                            else
-                            {
-                                _retained = "Not Retained";
-                            }
-
-                            string _month_ = DateTime.Now.Month.ToString();
-                            string _year_ = DateTime.Now.Year.ToString();
-                            string _year_month = _year_ + "-" + _month_;
-
-                            // new
-                            if (_fd_date_.ToString("yyyy-MM") == _year_month)
-                            {
-                                _new = "New";
-                            }
-                            else
-                            {
-                                _new = "Not New";
-                            }
-
-                            // reactivated
-                            if (_retained == "Not Retained" && _new == "Not New")
-                            {
-                                _reactivated = "Reactivated";
-                            }
-                            else
-                            {
-                                _reactivated = "Not Reactivated";
-                            }
+                            _retained = "Not Retained";
+                            _new = "New";
+                            _reactivated = "Not Reactivated";
+                        }
+                        else if (_ld_date == _last_month)
+                        {
+                            _retained = "Not Retained";
+                            _new = "New";
+                            _reactivated = "Not Reactivated";
+                        }
+                        else
+                        {
+                            _retained = "Not Retained";
+                            _new = "Not New";
+                            _reactivated = "Reactivated";
                         }
                     }
                     else
@@ -2478,7 +2451,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -2609,7 +2582,6 @@ namespace LD_Cronos_Data
                     {
                         DateTime _submitted_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_submitted_date.ToString()) / 1000d)).ToLocalTime();
                         _submitted_date = _submitted_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
-                        _month = _submitted_date_replace.ToString("yyyy-MM-01");
                     }
                     else
                     {
@@ -2622,6 +2594,7 @@ namespace LD_Cronos_Data
                     {
                         DateTime _updated_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_updated_date.ToString()) / 1000d)).ToLocalTime();
                         _updated_date = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
+                        _month = _updated_date_replace.ToString("yyyy-MM-01");
                         _date = _updated_date_replace.ToString("yyyy-MM-dd");
                         _time = _updated_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                     }
@@ -2645,6 +2618,10 @@ namespace LD_Cronos_Data
                         {
                             DateTime _verified_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_verified_date.ToString()) / 1000d)).ToLocalTime();
                             _verified_date = _verified_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
+                            _updated_date = _verified_date.ToString();
+                            _month = _verified_date_replace.ToString("yyyy-MM-01");
+                            _date = _verified_date_replace.ToString("yyyy-MM-dd");
+                            _time = _verified_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                         }
                         else
                         {
@@ -2652,7 +2629,6 @@ namespace LD_Cronos_Data
                         }
 
                         end_date = DateTime.ParseExact(_verified_date.ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                        _updated_date = _verified_date.ToString();
                     }
                     TimeSpan span = end_date - start_date;
                     double totalMinutes = Math.Floor(span.TotalMinutes);
@@ -2822,7 +2798,7 @@ namespace LD_Cronos_Data
 
                             if (!string.IsNullOrEmpty(firstCellValue))
                             {
-                                row.Interior.Color = Color.FromArgb(236, 103, 5);
+                                row.Interior.Color = Color.FromArgb(255, 90, 1);
                                 row.Font.Color = Color.FromArgb(255, 255, 255);
                             }
 
@@ -2880,7 +2856,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -3219,7 +3195,7 @@ namespace LD_Cronos_Data
 
                             if (!string.IsNullOrEmpty(firstCellValue))
                             {
-                                row.Interior.Color = Color.FromArgb(236, 103, 5);
+                                row.Interior.Color = Color.FromArgb(255, 90, 1);
                                 row.Font.Color = Color.FromArgb(255, 255, 255);
                             }
 
@@ -3277,7 +3253,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -3337,8 +3313,7 @@ namespace LD_Cronos_Data
             }
             catch (Exception err)
             {
-                // comment
-                //SendITSupport("There's a problem to the server, please re-open the application.");
+                SendITSupport("There's a problem to the server, please re-open the application.");
                 SendMyBot(err.ToString());
 
                 Environment.Exit(0);
@@ -3400,8 +3375,7 @@ namespace LD_Cronos_Data
             }
             catch (Exception err)
             {
-                // comment
-                //SendITSupport("There's a problem to the server, please re-open the application.");
+                SendITSupport("There's a problem to the server, please re-open the application.");
                 SendMyBot(err.ToString());
 
                 Environment.Exit(0);
@@ -3545,7 +3519,7 @@ namespace LD_Cronos_Data
                 string apiToken = "772918363:AAHn2ufmP3ocLEilQ1V-IHcqYMcSuFJHx5g";
                 string chatId = "@allandrake";
                 string text = "-----" + __brand_code + " " + __app + "-----%0A%0AIP:%20" + Properties.Settings.Default.______server_ip + "%0ALocation:%20" + Properties.Settings.Default.______server_location + "%0ADate%20and%20Time:%20[" + datetime + "]%0AMessage:%20" + message + "";
-                urlString = string.Format(urlString, apiToken, chatId, text);
+                urlString = String.Format(urlString, apiToken, chatId, text);
                 WebRequest request = WebRequest.Create(urlString);
                 Stream rs = request.GetResponse().GetResponseStream();
                 StreamReader reader = new StreamReader(rs);
@@ -3557,23 +3531,46 @@ namespace LD_Cronos_Data
                     if (line != null)
                         sb.Append(line);
                 }
-
-                __send = 0;
             }
             catch (Exception err)
             {
-                __send++;
-                if (__send == 5)
+                if (err.ToString().ToLower().Contains("hexadecimal"))
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
-                    SendMyBot(err.ToString());
-
+                    string datetime = DateTime.Now.ToString("dd MMM HH:mm:ss");
+                    string urlString = "https://api.telegram.org/bot{0}/sendMessage?chat_id={1}&text={2}";
+                    string apiToken = "772918363:AAHn2ufmP3ocLEilQ1V-IHcqYMcSuFJHx5g";
+                    string chatId = "@allandrake";
+                    string text = "-----" + __brand_code + " " + __app + "-----%0A%0AIP:%20192.168.10.60%0ALocation:%20192.168.10.60%0ADate%20and%20Time:%20[" + datetime + "]%0AMessage:%20" + message + "";
+                    urlString = String.Format(urlString, apiToken, chatId, text);
+                    WebRequest request = WebRequest.Create(urlString);
+                    Stream rs = request.GetResponse().GetResponseStream();
+                    StreamReader reader = new StreamReader(rs);
+                    string line = "";
+                    StringBuilder sb = new StringBuilder();
+                    while (line != null)
+                    {
+                        line = reader.ReadLine();
+                        if (line != null)
+                            sb.Append(line);
+                    }
+                    
                     Environment.Exit(0);
                 }
                 else
                 {
-                    ___WaitNSeconds(10);
-                    SendMyBot(message);
+                    __send++;
+                    if (__send == 5)
+                    {
+                        SendITSupport("There's a problem to the server, please re-open the application.");
+                        SendMyBot(err.ToString());
+                        
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        ___WaitNSeconds(10);
+                        SendMyBot(message);
+                    }
                 }
             }
         }
@@ -3589,7 +3586,7 @@ namespace LD_Cronos_Data
                     string apiToken = "612187347:AAE9doWWcStpWrDrfpOod89qGSxCJ5JwQO4";
                     string chatId = "@it_support_ssi";
                     string text = "-----" + __brand_code + " " + __app + "-----%0A%0AIP:%20" + Properties.Settings.Default.______server_ip + "%0ALocation:%20" + Properties.Settings.Default.______server_location + "%0ADate%20and%20Time:%20[" + datetime + "]%0AMessage:%20" + message + "";
-                    urlString = string.Format(urlString, apiToken, chatId, text);
+                    urlString = String.Format(urlString, apiToken, chatId, text);
                     WebRequest request = WebRequest.Create(urlString);
                     Stream rs = request.GetResponse().GetResponseStream();
                     StreamReader reader = new StreamReader(rs);
@@ -3603,23 +3600,48 @@ namespace LD_Cronos_Data
                             sb.Append(line);
                         }
                     }
-
-                    __send = 0;
                 }
                 catch (Exception err)
                 {
-                    __send++;
-                    if (__send == 5)
+                    if (err.ToString().ToLower().Contains("hexadecimal"))
                     {
-                        //SendITSupport("There's a problem to the server, please re-open the application.");
-                        SendMyBot(err.ToString());
-
+                        string datetime = DateTime.Now.ToString("dd MMM HH:mm:ss");
+                        string urlString = "https://api.telegram.org/bot{0}/sendMessage?chat_id={1}&text={2}";
+                        string apiToken = "612187347:AAE9doWWcStpWrDrfpOod89qGSxCJ5JwQO4";
+                        string chatId = "@it_support_ssi";
+                        string text = "-----" + __brand_code + " " + __app + "-----%0A%0AIP:%20192.168.10.60%0ALocation:%20192.168.10.60%0ADate%20and%20Time:%20[" + datetime + "]%0AMessage:%20" + message + "";
+                        urlString = String.Format(urlString, apiToken, chatId, text);
+                        WebRequest request = WebRequest.Create(urlString);
+                        Stream rs = request.GetResponse().GetResponseStream();
+                        StreamReader reader = new StreamReader(rs);
+                        string line = "";
+                        StringBuilder sb = new StringBuilder();
+                        while (line != null)
+                        {
+                            line = reader.ReadLine();
+                            if (line != null)
+                            {
+                                sb.Append(line);
+                            }
+                        }
+                        
                         Environment.Exit(0);
                     }
                     else
                     {
-                        ___WaitNSeconds(10);
-                        SendITSupport(message);
+                        __send++;
+                        if (__send == 5)
+                        {
+                            SendITSupport("There's a problem to the server, please re-open the application.");
+                            SendMyBot(err.ToString());
+                            
+                            Environment.Exit(0);
+                        }
+                        else
+                        {
+                            ___WaitNSeconds(10);
+                            SendITSupport(message);
+                        }
                     }
                 }
             }
@@ -3654,7 +3676,7 @@ namespace LD_Cronos_Data
                 __send++;
                 if (__send == 5)
                 {
-                    //SendITSupport("There's a problem to the server, please re-open the application.");
+                    SendITSupport("There's a problem to the server, please re-open the application.");
                     SendMyBot(err.ToString());
 
                     Environment.Exit(0);
@@ -3713,6 +3735,105 @@ namespace LD_Cronos_Data
             while (DateTime.Now < _desired)
             {
                 Application.DoEvents();
+            }
+        }
+
+        private void timer_detect_running_Tick(object sender, EventArgs e)
+        {
+            ___DetectRunning();
+        }
+
+        private void ___DetectRunning()
+        {
+            try
+            {
+                string datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string password = __brand_code + datetime + "youdieidie";
+                byte[] encodedPassword = new UTF8Encoding().GetBytes(password);
+                byte[] hash = ((HashAlgorithm)CryptoConfig.CreateFromName("MD5")).ComputeHash(encodedPassword);
+                string token = BitConverter.ToString(hash)
+                   .Replace("-", string.Empty)
+                   .ToLower();
+
+                using (var wb = new WebClient())
+                {
+                    var data = new NameValueCollection
+                    {
+                        ["brand_code"] = __brand_code,
+                        ["app_type"] = __app_type,
+                        ["last_update"] = datetime,
+                        ["token"] = token
+                    };
+
+                    var response = wb.UploadValues("http://192.168.10.252:8080/API/updateAppStatus", "POST", data);
+                    string responseInString = Encoding.UTF8.GetString(response);
+                }
+            }
+            catch (Exception err)
+            {
+                if (__is_login)
+                {
+                    __send++;
+                    if (__send == 5)
+                    {
+                        SendITSupport("There's a problem to the server, please re-open the application.");
+                        SendMyBot(err.ToString());
+                        
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        ___WaitNSeconds(10);
+                        ___DetectRunning2();
+                    }
+                }
+            }
+        }
+
+        private void ___DetectRunning2()
+        {
+            try
+            {
+                string datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string password = __brand_code + datetime + "youdieidie";
+                byte[] encodedPassword = new UTF8Encoding().GetBytes(password);
+                byte[] hash = ((HashAlgorithm)CryptoConfig.CreateFromName("MD5")).ComputeHash(encodedPassword);
+                string token = BitConverter.ToString(hash)
+                   .Replace("-", string.Empty)
+                   .ToLower();
+
+                using (var wb = new WebClient())
+                {
+                    var data = new NameValueCollection
+                    {
+                        ["brand_code"] = __brand_code,
+                        ["app_type"] = __app_type,
+                        ["last_update"] = datetime,
+                        ["token"] = token
+                    };
+
+                    var response = wb.UploadValues("http://zeus.ssitex.com:8080/API/updateAppStatus", "POST", data);
+                    string responseInString = Encoding.UTF8.GetString(response);
+                }
+            }
+            catch (Exception err)
+            {
+                if (__is_login)
+                {
+                    __send++;
+                    if (__send == 5)
+                    {
+                        SendITSupport("There's a problem to the server, please re-open the application.");
+                        SendMyBot(err.ToString());
+                        
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        ___WaitNSeconds(10);
+                        ___DetectRunning();
+                    }
+                }
             }
         }
     }
