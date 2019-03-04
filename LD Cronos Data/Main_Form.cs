@@ -729,9 +729,9 @@ namespace LD_Cronos_Data
                     _display_count++;
                     label_total_records.Text = _display_count.ToString("N0") + " of " + __jo_count.Count().ToString("N0");
 
-                    JToken _username = __jo.SelectToken("$.aaData[" + i + "].userId").ToString();
+                    JToken _username = __jo.SelectToken("$.aaData[" + i + "].userId").ToString().Replace("\"", "");
                     // -----
-                    JToken _name = __jo.SelectToken("$.aaData[" + i + "].userName").ToString();
+                    JToken _name = __jo.SelectToken("$.aaData[" + i + "].userName").ToString().Replace("\"", "");
                     // -----
                     JToken _email = __jo.SelectToken("$.aaData[" + i + "].email").ToString();
                     // -----
@@ -749,6 +749,7 @@ namespace LD_Cronos_Data
                     }
                     // -----
                     JToken _vip = __jo.SelectToken("$.aaData[" + i + "].vipLevel").ToString();
+                    string _vip_not_formatted = _vip.ToString();
                     if (_vip.ToString() == "1")
                     {
                         _vip = "New Member";
@@ -825,7 +826,7 @@ namespace LD_Cronos_Data
                     if (_registration_date.ToString() != "")
                     {
                         DateTime _registration_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_registration_date.ToString()) / 1000d)).ToLocalTime();
-                        _registration_date = _registration_date_replace.ToString("yyyy-MM-dd");
+                        _registration_date = _registration_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                         _month_reg = _registration_date_replace.ToString("yyyy-MM-01");
 
                     }
@@ -873,10 +874,10 @@ namespace LD_Cronos_Data
 
                     if (_display_count == 1)
                     {
-                        var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", "Brand", "Username", "Name", "Status", "Date Registered", "Last Login Date", "Last Deposit Date", "Contact Number", "Email", "VIP Level", "Registration Date", "Month Reg", "First Deposit Date", "First Deposit Month", "IP Address", "Affiliate", "Source", "Date of Birth", "User ID", "Wechat", "QQ");
+                        var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}", "Brand", "Username", "Name", "Status", "Date Registered", "Last Login Date", "Last Deposit Date", "Contact Number", "Email", "VIP", "VIP Level", "Registration Date", "Month Reg", "First Deposit Date", "First Deposit Month", "IP Address", "Affiliate", "Source", "Date of Birth", "User ID", "Wechat", "QQ");
                         _DATA.AppendLine(header);
                     }
-                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", __brand_code, "\"" + _username + "\"", "\"" + _name + "\"", "\"" + _status + "\"", "\"" + _registration_date + "\"", "\"" + _last_login_date + "\"", "\"" + _ld_date + "\"", "\"" + "86" + _contact_number + "\"", "\"" + _email + "\"", "\"" + _vip + "\"", "\"" + _registration_date + "\"", "\"" + _month_reg + "\"", "\"" + _fd_date + "\"", "\"" + _first_fd_month + "\"", "\"" + _ip_address + "\"", "\"" + _affiliate_url + "\"", "\"" + _source + "\"", "\"" + _dob + "\"", "\"" + "" + "\"", "\"" + "" + "\"", "\"" + "" + "\"");
+                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}", __brand_code, "\"" + _username + "\"", "\"" + _name + "\"", "\"" + _status + "\"", "\"" + _registration_date + "\"", "\"" + _last_login_date + "\"", "\"" + _ld_date + "\"", "\"" + "86" + _contact_number + "\"", "\"" + _email + "\"", "\"" + _vip_not_formatted + "\"", "\"" + _vip + "\"", "\"" + _registration_date + "\"", "\"" + _month_reg + "\"", "\"" + _fd_date + "\"", "\"" + _first_fd_month + "\"", "\"" + _ip_address + "\"", "\"" + _affiliate_url + "\"", "\"" + _source + "\"", "\"" + _dob + "\"", "\"" + "" + "\"", "\"" + "" + "\"", "\"" + "" + "\"");
                     _DATA.AppendLine(data);
                 }
 
@@ -932,8 +933,9 @@ namespace LD_Cronos_Data
                                         Excel.XlAutoFilterOperator.xlAnd,
                                         Type.Missing,
                                         true);
-                    worksheet.Columns[5].NumberFormat = "MM/dd/yyyy";
+                    worksheet.Columns[5].NumberFormat = "MM/dd/yyyy HH:mm:ss";
                     worksheet.Columns[2].NumberFormat = "@";
+                    worksheet.Columns[8].NumberFormat = "@";
                     Excel.Range usedRange = worksheet.UsedRange;
                     Excel.Range rows = usedRange.Rows;
                     int count = 0;
@@ -1390,7 +1392,7 @@ namespace LD_Cronos_Data
                 end = end.Replace("00:00:00", "");
 
                 label_page_count.Text = "-";
-                byte[] result = await wc.DownloadDataTaskAsync(__root_url + "/manager/ReportController/searchTurnReport?userName=&type=-1&placedDateStart=" + start + "&placedDateEnd=" + end + "&pageNumber=1&pageSize=" + __display_length + "&sortCondition=3&sortName=summaryDate&sortOrder=1&searchText=");
+                byte[] result = await wc.DownloadDataTaskAsync(__root_url + "/manager/ReportController/searchTurnReport?userName=&type=-1&placedDateStart=" + start + "&placedDateEnd=" + end + "&pageNumber=1&pageSize=50000&sortCondition=3&sortName=summaryDate&sortOrder=1&searchText=");
                 string responsebody = Encoding.UTF8.GetString(result);
                 var deserialize_object = JsonConvert.DeserializeObject(responsebody);
                 __jo = JObject.Parse(deserialize_object.ToString());
@@ -1480,10 +1482,13 @@ namespace LD_Cronos_Data
 
                     string _fd_date = await ___REGISTRATION_FIRSTDEPOSITAsync(_member.ToString());
                     string _ld_date = await ___REGISTRATION_LASTDEPOSITAsync(_member.ToString());
+                    string _fd_date_rnr = "";
+                    string _ld_date_rnr = "";
                     if (_fd_date != "")
                     {
                         DateTime _fd_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_fd_date.ToString()) / 1000d)).ToLocalTime();
                         _fd_date = _fd_date_replace.ToString("MM/dd/yyyy");
+                        _fd_date_rnr = _fd_date_replace.ToString("MM/yyyy");
                     }
                     else
                     {
@@ -1493,6 +1498,7 @@ namespace LD_Cronos_Data
                     {
                         DateTime _ld_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_ld_date.ToString()) / 1000d)).ToLocalTime();
                         _ld_date = _ld_date_replace.ToString("yyyy-MM-dd");
+                        _ld_date_rnr = _ld_date_replace.ToString("yyyy-MM");
                     }
                     else
                     {
@@ -1503,15 +1509,15 @@ namespace LD_Cronos_Data
                     string _month_ = DateTime.Now.Month.ToString();
                     string _year_ = DateTime.Now.Year.ToString();
                     string _year_month = _year_ + "-" + _month_;
-                    string _current_month = DateTime.Now.ToString("MM/dd/yyyy");
-                    string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd");
-                    if (_fd_date == _current_month)
+                    string _current_month = DateTime.Now.ToString("MM/yyyy");
+                    string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
+                    if (_fd_date_rnr == _current_month)
                     {
                         _retained = "Not Retained";
                     }
-                    else if (_ld_date == _last_month)
+                    else if (_ld_date_rnr == _last_month)
                     {
-                        _retained = "Not Retained";
+                        _retained = "Retained";
                     }
                     else
                     {
@@ -1630,6 +1636,7 @@ namespace LD_Cronos_Data
                                         Excel.XlAutoFilterOperator.xlAnd,
                                         Type.Missing,
                                         true);
+                    worksheet.Columns[6].NumberFormat = "@";
                     Excel.Range usedRange = worksheet.UsedRange;
                     Excel.Range rows = usedRange.Rows;
                     int count = 0;
@@ -1958,6 +1965,7 @@ namespace LD_Cronos_Data
                                     Type.Missing,
                                     true);
                 worksheet.Columns[1].NumberFormat = "MMM-y";
+                worksheet.Columns[5].NumberFormat = "@";
                 worksheet.Columns[8].NumberFormat = "MM/dd/yyyy HH:mm";
                 worksheet.Columns[9].NumberFormat = "MM/dd/yyyy HH:mm";
                 Excel.Range usedRange = worksheet.UsedRange;
@@ -1973,7 +1981,7 @@ namespace LD_Cronos_Data
 
                         if (!string.IsNullOrEmpty(firstCellValue))
                         {
-                            row.Interior.Color = Color.FromArgb(27, 96, 168);
+                            row.Interior.Color = Color.FromArgb(255, 90, 1);
                             row.Font.Color = Color.FromArgb(255, 255, 255);
                         }
 
@@ -2189,10 +2197,13 @@ namespace LD_Cronos_Data
                     string _fd_date = await ___REGISTRATION_FIRSTDEPOSITAsync(_member.ToString());
                     string _ld_date = await ___REGISTRATION_LASTDEPOSITAsync(_member.ToString());
                     string _first_fd_month = "";
+                    string _fd_date_rnr = "";
+                    string _ld_date_rnr = "";
                     if (_fd_date != "")
                     {
                         DateTime _fd_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_fd_date.ToString()) / 1000d)).ToLocalTime();
                         _fd_date = _fd_date_replace.ToString("MM/dd/yyyy");
+                        _fd_date_rnr = _fd_date_replace.ToString("MM/yyyy");
                     }
                     else
                     {
@@ -2202,6 +2213,7 @@ namespace LD_Cronos_Data
                     {
                         DateTime _ld_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_ld_date.ToString()) / 1000d)).ToLocalTime();
                         _ld_date = _ld_date_replace.ToString("yyyy-MM-dd");
+                        _ld_date_rnr = _ld_date_replace.ToString("yyyy-MM");
                     }
                     else
                     {
@@ -2362,18 +2374,18 @@ namespace LD_Cronos_Data
                     string _reactivated = "";
                     if (_status.ToString() == "Approved" && !_member.ToString().ToLower().Contains("test"))
                     {
-                        string _current_month = DateTime.Now.ToString("MM/dd/yyyy");
-                        string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd");
-                        if (_fd_date == _current_month)
+                        string _current_month = DateTime.Now.ToString("MM/yyyy");
+                        string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
+                        if (_fd_date_rnr == _current_month)
                         {
                             _retained = "Not Retained";
                             _new = "New";
                             _reactivated = "Not Reactivated";
                         }
-                        else if (_ld_date == _last_month)
+                        else if (_ld_date_rnr == _last_month)
                         {
-                            _retained = "Not Retained";
-                            _new = "New";
+                            _retained = "Retained";
+                            _new = "Not New";
                             _reactivated = "Not Reactivated";
                         }
                         else
@@ -2793,6 +2805,7 @@ namespace LD_Cronos_Data
                     worksheet.Columns[4].NumberFormat = "MM/dd/yyyy";
                     worksheet.Columns[5].NumberFormat = "MM/dd/yyyy";
                     worksheet.Columns[6].NumberFormat = "MM/dd/yyyy";
+                    worksheet.Columns[7].NumberFormat = "@";
                     Excel.Range usedRange = worksheet.UsedRange;
                     Excel.Range rows = usedRange.Rows;
                     int count = 0;
@@ -3190,6 +3203,7 @@ namespace LD_Cronos_Data
                                         Excel.XlAutoFilterOperator.xlAnd,
                                         Type.Missing,
                                         true);
+                    worksheet.Columns[6].NumberFormat = "@";
                     Excel.Range usedRange = worksheet.UsedRange;
                     Excel.Range rows = usedRange.Rows;
                     int count = 0;
