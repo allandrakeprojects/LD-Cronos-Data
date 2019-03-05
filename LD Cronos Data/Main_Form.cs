@@ -821,18 +821,20 @@ namespace LD_Cronos_Data
                         _ld_date = "";
                     }
                     // -----
-                    JToken _registration_date = __jo.SelectToken("$.aaData[" + i + "].createTime").ToString();
+                    JToken _date_registered = __jo.SelectToken("$.aaData[" + i + "].createTime").ToString();
+                    string _registration_date = "";
                     string _month_reg = "";
-                    if (_registration_date.ToString() != "")
+                    if (_date_registered.ToString() != "")
                     {
-                        DateTime _registration_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_registration_date.ToString()) / 1000d)).ToLocalTime();
-                        _registration_date = _registration_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
-                        _month_reg = _registration_date_replace.ToString("yyyy-MM-01");
+                        DateTime _date_registered_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_date_registered.ToString()) / 1000d)).ToLocalTime();
+                        _date_registered = _date_registered_replace.ToString("yyyy-MM-dd HH:mm:ss");
+                        _registration_date = _date_registered_replace.ToString("yyyy-MM-dd");
+                        _month_reg = _date_registered_replace.ToString("yyyy-MM-01");
 
                     }
                     else
                     {
-                        _registration_date = "";
+                        _date_registered = "";
                     }
                     // -----
                     JToken _last_login_date = __jo.SelectToken("$.aaData[" + i + "].loginTime").ToString();
@@ -869,15 +871,13 @@ namespace LD_Cronos_Data
                     {
                         _status = "";
                     }
-
-                    //MessageBox.Show("Username: " + _username + "\nName: " + _name + "\nEmail: " + _email + "\nPhone: " + _contact_number + "\nDOB: " + _dob + "\nVIP: " + _vip + "\nURL: " + _affiliate_url + "\nSource: " + _source + "\nFD: " + _fd_date + "\nLD: " + _ld_date + "\nDate Registered: " + _registration_date + "\nLast Login Time: " + _last_login_date "\nStatus: " + _status);
-
+                    
                     if (_display_count == 1)
                     {
-                        var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}", "Brand", "Username", "Name", "Status", "Date Registered", "Last Login Date", "Last Deposit Date", "Contact Number", "Email", "VIP", "VIP Level", "Registration Date", "Month Reg", "First Deposit Date", "First Deposit Month", "IP Address", "Affiliate", "Source", "Date of Birth", "User ID", "Wechat", "QQ");
+                        var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}", "Brand", "Username", "Name", "Status", "Date Registered", "Last Login Date", "Last Deposit Date", "Contact Number", "Email", "Player Level", "VIP Level", "Registration Date", "Month Reg", "First Deposit Date", "First Deposit Month", "IP Address", "Affiliate", "Source", "Date of Birth", "User ID", "Wechat", "QQ");
                         _DATA.AppendLine(header);
                     }
-                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}", __brand_code, "\"" + _username + "\"", "\"" + _name + "\"", "\"" + _status + "\"", "\"" + _registration_date + "\"", "\"" + _last_login_date + "\"", "\"" + _ld_date + "\"", "\"" + "86" + _contact_number + "\"", "\"" + _email + "\"", "\"" + _vip_not_formatted + "\"", "\"" + _vip + "\"", "\"" + _registration_date + "\"", "\"" + _month_reg + "\"", "\"" + _fd_date + "\"", "\"" + _first_fd_month + "\"", "\"" + _ip_address + "\"", "\"" + _affiliate_url + "\"", "\"" + _source + "\"", "\"" + _dob + "\"", "\"" + "" + "\"", "\"" + "" + "\"", "\"" + "" + "\"");
+                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21}", __brand_code, "\"" + _username + "\"", "\"" + _name + "\"", "\"" + _status + "\"", "\"" + _date_registered + "\"", "\"" + _last_login_date + "\"", "\"" + _ld_date + "\"", "\"" + "86" + _contact_number + "\"", "\"" + _email + "\"", "\"" + _vip_not_formatted + "\"", "\"" + _vip + "\"", "\"" + _registration_date + "\"", "\"" + _month_reg + "\"", "\"" + _fd_date + "\"", "\"" + _first_fd_month + "\"", "\"" + _ip_address + "\"", "\"" + _affiliate_url + "\"", "\"" + _source + "\"", "\"" + _dob + "\"", "\"" + "" + "\"", "\"" + "" + "\"", "\"" + "" + "\"");
                     _DATA.AppendLine(data);
                 }
 
@@ -933,9 +933,10 @@ namespace LD_Cronos_Data
                                         Excel.XlAutoFilterOperator.xlAnd,
                                         Type.Missing,
                                         true);
-                    worksheet.Columns[5].NumberFormat = "MM/dd/yyyy HH:mm:ss";
+                    worksheet.Columns[5].NumberFormat = "M/d/yyyy";
                     worksheet.Columns[2].NumberFormat = "@";
                     worksheet.Columns[8].NumberFormat = "@";
+                    worksheet.Columns[12].NumberFormat = "M/d/yyyy";
                     Excel.Range usedRange = worksheet.UsedRange;
                     Excel.Range rows = usedRange.Rows;
                     int count = 0;
@@ -1384,12 +1385,10 @@ namespace LD_Cronos_Data
                 wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
                 string start = dateTimePicker_start.Text;
-                start = start.Replace("-", "%2F");
-                start = start.Replace("00:00:00", "");
+                start = start.Replace("-", "%2F").Replace("00:00:00", "");
 
                 string end = dateTimePicker_end.Text;
-                end = end.Replace("-", "%2F");
-                end = end.Replace("00:00:00", "");
+                end = end.Replace("-", "%2F").Replace("00:00:00", "");
 
                 label_page_count.Text = "-";
                 byte[] result = await wc.DownloadDataTaskAsync(__root_url + "/manager/ReportController/searchTurnReport?userName=&type=-1&placedDateStart=" + start + "&placedDateEnd=" + end + "&pageNumber=1&pageSize=50000&sortCondition=3&sortName=summaryDate&sortOrder=1&searchText=");
@@ -1510,12 +1509,14 @@ namespace LD_Cronos_Data
                     string _year_ = DateTime.Now.Year.ToString();
                     string _year_month = _year_ + "-" + _month_;
                     string _current_month = DateTime.Now.ToString("MM/yyyy");
+                    string _current_month_ = DateTime.Now.ToString("yyyy-MM");
                     string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
+                    string _last_month_ = DateTime.Now.AddMonths(-1).ToString("MM/yyyy");
                     if (_fd_date_rnr == _current_month)
                     {
                         _retained = "Not Retained";
                     }
-                    else if (_ld_date_rnr == _last_month)
+                    else if (_fd_date_rnr == _last_month_ || _ld_date_rnr == _last_month || _ld_date_rnr == _current_month_)
                     {
                         _retained = "Retained";
                     }
@@ -2375,14 +2376,17 @@ namespace LD_Cronos_Data
                     if (_status.ToString() == "Approved" && !_member.ToString().ToLower().Contains("test"))
                     {
                         string _current_month = DateTime.Now.ToString("MM/yyyy");
+                        string _current_month_ = DateTime.Now.ToString("yyyy-MM");
                         string _last_month = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
+                        string _last_month_ = DateTime.Now.AddMonths(-1).ToString("MM/yyyy");
+
                         if (_fd_date_rnr == _current_month)
                         {
                             _retained = "Not Retained";
                             _new = "New";
                             _reactivated = "Not Reactivated";
                         }
-                        else if (_ld_date_rnr == _last_month)
+                        else if (_fd_date_rnr == _last_month_ || _ld_date_rnr == _last_month || _ld_date_rnr == _current_month_)
                         {
                             _retained = "Retained";
                             _new = "Not New";
@@ -3427,6 +3431,8 @@ namespace LD_Cronos_Data
                         Properties.Settings.Default.______midnight_time = "";
                         Properties.Settings.Default.Save();
 
+                        //__getdata_affiliatelist.Clear();
+                        //__getdata_bonuscode.Clear();
                         //___GETDATA_AFFILIATELIST();
                         //___GETDATA_BONUSCODE();
                         Properties.Settings.Default.______start_detect = "1";
@@ -3456,6 +3462,8 @@ namespace LD_Cronos_Data
                             Properties.Settings.Default.______midnight_time = "";
                             Properties.Settings.Default.Save();
 
+                            //__getdata_affiliatelist.Clear();
+                            //__getdata_bonuscode.Clear();
                             //___GETDATA_AFFILIATELIST();
                             //___GETDATA_BONUSCODE();
                             Properties.Settings.Default.______start_detect = "1";
