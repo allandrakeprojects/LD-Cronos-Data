@@ -205,6 +205,7 @@
             this.panel_ld.Controls.Add(this.label_navigate_up);
             this.panel_ld.Controls.Add(this.label_title_ld);
             this.panel_ld.Controls.Add(this.panel_filter);
+            this.panel_ld.Enabled = false;
             this.panel_ld.Location = new System.Drawing.Point(17, 70);
             this.panel_ld.Name = "panel_ld";
             this.panel_ld.Size = new System.Drawing.Size(534, 408);
@@ -601,7 +602,6 @@
             this.label_cycle_in.Name = "label_cycle_in";
             this.label_cycle_in.Size = new System.Drawing.Size(147, 27);
             this.label_cycle_in.TabIndex = 1;
-            this.label_cycle_in.Text = "-";
             this.label_cycle_in.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_cycle_in.Visible = false;
             // 
