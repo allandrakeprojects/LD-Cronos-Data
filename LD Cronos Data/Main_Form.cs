@@ -550,22 +550,15 @@ namespace LD_Cronos_Data
                     label_cycle_in.Text = timeRemaining.Minutes + " min(s) " + timeRemaining.Seconds + " sec(s)";
                 }
 
-                if (Properties.Settings.Default.______midnight_time != "")
+                if (label_cycle_in.Text.Contains("-") && label_cycle_in.Text.Contains("min"))
                 {
-                    if (label_cycle_in.Text.Contains("-"))
-                    {
-                        panel_ld.Enabled = false;
+                    panel_ld.Enabled = false;
 
-                        DateTime today = DateTime.Now;
-                        DateTime date = today.AddDays(1);
-                        Properties.Settings.Default.______midnight_time = date.ToString("yyyy-MM-dd 00:30");
-                        Properties.Settings.Default.______start_detect = "1";
-                        Properties.Settings.Default.Save();
-                    }
-                    else
-                    {
-                        panel_ld.Enabled = true;
-                    }
+                    DateTime today = DateTime.Now;
+                    DateTime date = today.AddDays(1);
+                    Properties.Settings.Default.______midnight_time = date.ToString("yyyy-MM-dd 00:30");
+                    Properties.Settings.Default.______start_detect = "1";
+                    Properties.Settings.Default.Save();
                 }
             }
         }
@@ -1194,9 +1187,7 @@ namespace LD_Cronos_Data
                                         break;
                                     }
                                 }
-
-                                MessageBox.Show(_bonus_category);
-
+                                
                                 if (_bonus_category == "")
                                 {
                                     string get1 = _bonus_code.ToString().Substring(6, 3);
@@ -3447,38 +3438,6 @@ namespace LD_Cronos_Data
                         comboBox_list.SelectedIndex = 0;
                         button_start.Enabled = true;
                         button_start.PerformClick();
-                    }
-                }
-                else
-                {
-                    string start_datetime = today.ToString("yyyy-MM-dd HH:mm");
-                    DateTime start = DateTime.ParseExact(start_datetime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
-
-                    string end_datetime = Properties.Settings.Default.______midnight_time;
-                    DateTime end = DateTime.ParseExact(end_datetime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
-
-                    if (start > end)
-                    {
-                        if (Properties.Settings.Default.______start_detect == "0")
-                        {
-                            Properties.Settings.Default.______bet_record = 0;
-                            Properties.Settings.Default.Save();
-                            timer_bet_record.Start();
-
-                            Properties.Settings.Default.______midnight_time = "";
-                            Properties.Settings.Default.Save();
-
-                            //__getdata_affiliatelist.Clear();
-                            __getdata_bonuscode.Clear();
-                            //___GETDATA_AFFILIATELIST();
-                            ___GETDATA_BONUSCODE();
-                            Properties.Settings.Default.______start_detect = "1";
-                            Properties.Settings.Default.Save();
-                            comboBox_list.SelectedIndex = 1;
-                            comboBox_list.SelectedIndex = 0;
-                            button_start.Enabled = true;
-                            button_start.PerformClick();
-                        }
                     }
                 }
             }
