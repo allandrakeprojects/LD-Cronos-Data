@@ -34,7 +34,7 @@ namespace LD_Cronos_Data
         private string __brand_color_rgb = "255, 90, 1";
         private string __app = "Cronos Data";
         private string __app_type = "2";
-        private string __display_length = "100000";
+        private string __display_length = "500000";
         private int __send = 0;
         private int __timer_count = 10;
         private bool __is_login = false;
@@ -683,12 +683,6 @@ namespace LD_Cronos_Data
                             label_ld_status.Text = "status: doing calculation... --- BONUS REPORT";
                             await ___BONUSAsync();
                         }
-                        else if (comboBox_list.SelectedIndex == 3)
-                        {
-                            // Turnover Record
-                            label_ld_status.Text = "status: doing calculation... --- TURNOVER RECORD";
-                            await ___TURNOVERAsync();
-                        }
                     }
                 }
                 catch (Exception err)
@@ -1333,6 +1327,8 @@ namespace LD_Cronos_Data
         {
             try
             {
+                label_bettorecord.Visible = true;
+                
                 var cookie_manager = Cef.GetGlobalCookieManager();
                 var visitor = new CookieCollector();
                 cookie_manager.VisitUrlCookies(__url, true, visitor);
@@ -1355,9 +1351,6 @@ namespace LD_Cronos_Data
                 var deserialize_object = JsonConvert.DeserializeObject(responsebody);
                 __jo = JObject.Parse(deserialize_object.ToString());
                 __jo_count = __jo.SelectToken("$.aaData");
-                label_page_count.Text = "1 of 1";
-                label_total_records.Text = "0 of " + __jo_count.Count().ToString("N0");
-                label_ld_status.Text = "status: getting data... --- TURNOVER RECORD";
 
                 // TURNOVER PROCESS DATA
                 StringBuilder _DATA = new StringBuilder();
@@ -1367,7 +1360,7 @@ namespace LD_Cronos_Data
                 {
                     Application.DoEvents();
                     _display_count++;
-                    label_total_records.Text = _display_count.ToString("N0") + " of " + __jo_count.Count().ToString("N0");
+                    label_bettorecord.Text = "Turnover Record: " + _display_count.ToString("N0") + " of " + __jo_count.Count().ToString("N0");
 
                     // -----
                     JToken _member = __jo.SelectToken("$.aaData[" + i + "].userId").ToString();
@@ -1629,46 +1622,17 @@ namespace LD_Cronos_Data
                     app.Quit();
                     Marshal.ReleaseComObject(app);
 
-                    //if (File.Exists(_folder_path_result))
-                    //{
-                    //    File.Delete(_folder_path_result);
-                    //}
+                    if (File.Exists(_folder_path_result))
+                    {
+                        File.Delete(_folder_path_result);
+                    }
 
                     _DATA.Clear();
                 }
 
-                // DONE REPORTS
-                Properties.Settings.Default.______start_detect = "0";
-                Properties.Settings.Default.Save();
-
-                panel_status.Visible = false;
-                label_ld_status.Text = "-";
-                label_page_count.Text = "-";
-                label_total_records.Text = "-";
-                button_start.Visible = true;
-                if (__is_autostart)
-                {
-                    comboBox_list.SelectedIndex = 0;
-                    button_start.Enabled = false;
-
-                    //SendITSupport("Reports has been completed.");
-                    SendReportsTeam("Reports has been completed.");
-                }
-                else
-                {
-                    panel_filter.Enabled = true;
-                }
-                
-                __getdata_affiliatelist.Clear();
-                __getdata_bonuscode.Clear();
-                __start_datetime_elapsed = "";
-                label_finish_datetime.Text = DateTime.Now.ToString("ddd, dd MMM HH:mm:ss");
-                timer_elapsed.Stop();
-
-                label_start_datetime.Text = "-";
-                label_finish_datetime.Text = "-";
-
-                label_status.Text = "Waiting";
+                label_bettorecord.Visible = false;
+                label_bettorecord.Text = "";
+                await ___BETAsync();
 
                 __send = 0;
             }
@@ -1784,7 +1748,6 @@ namespace LD_Cronos_Data
         {
             StringBuilder _DATA = new StringBuilder();
             int _display_count = 0;
-            label_betrecord.Visible = true;
 
             try
             {
@@ -1821,7 +1784,7 @@ namespace LD_Cronos_Data
                         string _create_time = "";
 
                         _display_count++;
-                        label_betrecord.Text = "Bet Record: " + _display_count.ToString("N0") + " of " + rowCount.ToString("N0");
+                        label_bettorecord.Text = "Bet Record: " + _display_count.ToString("N0") + " of " + rowCount.ToString("N0");
                         string _details = "";
                         for (int j = 1; j <= colCount; j++)
                         {
@@ -1972,11 +1935,13 @@ namespace LD_Cronos_Data
 
                 _DATA.Clear();
                 _display_count = 0;
+
+                label_status.Text = "Waiting";
+                SendReportsTeam("Bet and Turnover Record Completed.");
+                label_bettorecord.Visible = false;
+                label_bettorecord.Text = "-";
+
                 __send = 0;
-                
-                SendReportsTeam("Bet Record Completed.");
-                label_betrecord.Visible = false;
-                label_betrecord.Text = "-";
             }
             catch (Exception err)
             {
@@ -2227,10 +2192,14 @@ namespace LD_Cronos_Data
                     JToken _submitted_date = __jo.SelectToken("$.aaData[" + i + "].createTime").ToString();
                     string _month = "";
                     string _date = "";
+                    string _time = "";
                     if (_submitted_date.ToString() != "")
                     {
                         DateTime _submitted_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_submitted_date.ToString()) / 1000d)).ToLocalTime();
                         _submitted_date = _submitted_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
+                        _month = _submitted_date_replace.ToString("yyyy-MM-01");
+                        _date = _submitted_date_replace.ToString("yyyy-MM-dd");
+                        _time = _submitted_date_replace.ToString("yyyy-MM-dd HH:mm:ss");
                     }
                     else
                     {
@@ -2238,7 +2207,6 @@ namespace LD_Cronos_Data
                     }
                     // -----
                     JToken _updated_date = __jo.SelectToken("$.aaData[" + i + "].approvedTime").ToString();
-                    string _time = "";
                     if (_updated_date.ToString() != "")
                     {
                         DateTime _updated_date_replace = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(Convert.ToDouble(_updated_date.ToString()) / 1000d)).ToLocalTime();
@@ -2249,7 +2217,7 @@ namespace LD_Cronos_Data
                     }
                     else
                     {
-                        _updated_date = "";
+                        _updated_date = _submitted_date;
                     }
                     // ----- Duration Time && Transaction Time
                     string _duration_time = "";
@@ -2759,7 +2727,7 @@ namespace LD_Cronos_Data
                             var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", "Brand", "Month", "Date", "Time", "Submitted Date", "Updated Date", "Member", "Payment Type", "Transaction ID", "Amount", "Transaction Time", "Transaction Type", "Duration Time", "VIP", "Status", "PG Company", "PG Type", "Retained", "FD Date", "New", "Reactivated");
                             _DATA.AppendLine(header);
                         }
-                        var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", __brand_code, "\"" + _month + "\"", "\"" + _date + "\"", "\"" + _time + "\"", "\"" + _submitted_date + "\"", "\"" + _updated_date + "\"", "\"" + _member + "\"", "\"" + "" + "\"", "\"" + _transaction_id + "\"", "\"" + _amount + "\"", "\"" + _transaction_time + "\"", "\"" + "Deposit" + "\"", "\"" + _duration_time + "\"", "\"" + _vip + "\"", "\"" + _status + "\"", "\"" + "LOCAL BANK" + "\"", "\"" + "LOCAL BANK" + "\"", "\"" + _retained + "\"", "\"" + _fd_date + "\"", "\"" + _new + "\"", "\"" + _reactivated + "\"");
+                        var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}", __brand_code, "\"" + _month + "\"", "\"" + _date + "\"", "\"" + _time + "\"", "\"" + _submitted_date + "\"", "\"" + _updated_date + "\"", "\"" + _member + "\"", "\"" + "" + "\"", "\"" + _transaction_id + "\"", "\"" + _amount + "\"", "\"" + _transaction_time + "\"", "\"" + "Withdrawal" + "\"", "\"" + _duration_time + "\"", "\"" + _vip + "\"", "\"" + _status + "\"", "\"" + "LOCAL BANK" + "\"", "\"" + "LOCAL BANK" + "\"", "\"" + _retained + "\"", "\"" + _fd_date + "\"", "\"" + _new + "\"", "\"" + _reactivated + "\"");
                         _DATA.AppendLine(data);
                     }
                 }
@@ -3256,12 +3224,8 @@ namespace LD_Cronos_Data
                     _DATA.Clear();
                 }
 
-                // REGISTRATION SEND TO DATABASE
-                // AUTO START
-
-
-                // next turnover
-                Properties.Settings.Default.______start_detect = "4";
+                // DONE REPORTS
+                Properties.Settings.Default.______start_detect = "0";
                 Properties.Settings.Default.Save();
 
                 panel_status.Visible = false;
@@ -3269,17 +3233,30 @@ namespace LD_Cronos_Data
                 label_page_count.Text = "-";
                 label_total_records.Text = "-";
                 button_start.Visible = true;
-                __detect_header = false;
                 if (__is_autostart)
                 {
-                    comboBox_list.SelectedIndex = 3;
-                    button_start.PerformClick();
+                    comboBox_list.SelectedIndex = 0;
+                    button_start.Enabled = false;
+
+                    //SendITSupport("Reports has been completed.");
+                    SendReportsTeam("Reports has been completed.");
                 }
                 else
                 {
                     panel_filter.Enabled = true;
                 }
 
+                __getdata_affiliatelist.Clear();
+                __getdata_bonuscode.Clear();
+                __start_datetime_elapsed = "";
+                label_finish_datetime.Text = DateTime.Now.ToString("ddd, dd MMM HH:mm:ss");
+                timer_elapsed.Stop();
+
+                label_start_datetime.Text = "-";
+                label_finish_datetime.Text = "-";
+
+                label_status.Text = "Waiting";
+                
                 __send = 0;
             }
             catch (Exception err)
@@ -3428,9 +3405,9 @@ namespace LD_Cronos_Data
                 {
                     if (Properties.Settings.Default.______start_detect == "0")
                     {
-                        Properties.Settings.Default.______bet_record = 0;
+                        Properties.Settings.Default.______betto_record = 0;
                         Properties.Settings.Default.Save();
-                        timer_bet_record.Start();
+                        timer_betto_record.Start();
 
                         Properties.Settings.Default.______midnight_time = "";
                         Properties.Settings.Default.Save();
@@ -3484,32 +3461,33 @@ namespace LD_Cronos_Data
                 // leave blank
             }
         }
-
-        private async void timer_bet_record_TickAsync(object sender, EventArgs e)
+         
+        private async void timer_betto_record_TickAsync(object sender, EventArgs e)
         {
-            timer_bet_record.Stop();
+            timer_betto_record.Stop();
 
-            if (Properties.Settings.Default.______bet_record == 0)
+            if (Properties.Settings.Default.______betto_record == 0)
             {
                 string cur_date = DateTime.Now.ToString("HH");
-                if (cur_date == "04")
+                if (cur_date == Properties.Settings.Default.______betto_record_time)
                 {
-                    if (__is_login)
+                    if (__is_login && label_status.Text == "Waiting")
                     {
-                        Properties.Settings.Default.______bet_record = 11;
+                        label_status.Text = "BET TO Running";
+                        Properties.Settings.Default.______betto_record = 1;
                         Properties.Settings.Default.Save();
 
-                        await ___BETAsync();
+                        await ___TURNOVERAsync();
                     }
                 }
                 else
                 {
-                    timer_bet_record.Start();
+                    timer_betto_record.Start();
                 }
             }
             else
             {
-                timer_bet_record.Stop();
+                timer_betto_record.Stop();
             }
         }
 
