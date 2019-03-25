@@ -1350,10 +1350,10 @@ namespace LD_Cronos_Data
                 wc.Encoding = Encoding.UTF8;
                 wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                string start = dateTimePicker_start.Text;
+                string start = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd 00:00:00");
                 start = start.Replace("-", "%2F").Replace("00:00:00", "");
 
-                string end = dateTimePicker_end.Text;
+                string end = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd 00:00:00");
                 end = end.Replace("-", "%2F").Replace("00:00:00", "");
 
                 label_page_count.Text = "-";
@@ -3667,7 +3667,7 @@ namespace LD_Cronos_Data
                                 sb.Append(line);
                             }
                         }
-                        
+
                         Environment.Exit(0);
                     }
                     else
@@ -3677,7 +3677,7 @@ namespace LD_Cronos_Data
                         {
                             SendITSupport("There's a problem to the server, please re-open the application.");
                             SendMyBot(err.ToString());
-                            
+
                             Environment.Exit(0);
                         }
                         else
