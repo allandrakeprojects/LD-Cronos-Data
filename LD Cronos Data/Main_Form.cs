@@ -1765,7 +1765,7 @@ namespace LD_Cronos_Data
                         SendReportsTeam("No Data for Bet Report.");
 
                         label_status.Text = "Waiting";
-                        SendReportsTeam("Bet and Turnover Reports Completed.");
+                        SendReportsTeam("Bet and TO Reports has been completed.");
                         __getdata_regdetails.Clear();
                         label_bettorecord.Visible = false;
                         label_bettorecord.Text = "-";
@@ -1776,7 +1776,7 @@ namespace LD_Cronos_Data
                     SendReportsTeam("No Data for Bet Report.");
 
                     label_status.Text = "Waiting";
-                    SendReportsTeam("Bet and Turnover Reports Completed.");
+                    SendReportsTeam("Bet and TO Reports has been completed.");
                     __getdata_regdetails.Clear();
                     label_bettorecord.Visible = false;
                     label_bettorecord.Text = "-";
@@ -1994,7 +1994,7 @@ namespace LD_Cronos_Data
                 _display_count = 0;
 
                 label_status.Text = "Waiting";
-                SendReportsTeam("Bet and Turnover Reports Completed.");
+                SendReportsTeam("Bet and Turnover Reports has been completed.");
                 __getdata_regdetails.Clear();
                 label_bettorecord.Visible = false;
                 label_bettorecord.Text = "-";
@@ -3344,8 +3344,8 @@ namespace LD_Cronos_Data
                     comboBox_list.SelectedIndex = 0;
                     button_start.Enabled = false;
 
-                    //SendITSupport("Reports has been completed.");
-                    SendReportsTeam("Reports has been completed.");
+                    //SendITSupport("Registration, Payment and Bonus Reports has been completed. (Bet and TO Reports auto-start at " + Properties.Settings.Default.______betto_record_time + ":00)");
+                    SendReportsTeam("Registration, Payment and Bonus Reports has been completed. (Bet and TO Reports auto-start at " + Properties.Settings.Default.______betto_record_time + ":00)");
                 }
                 else
                 {
