@@ -1703,7 +1703,7 @@ namespace LD_Cronos_Data
                 if (_jo_count.Count() > 0)
                 {
                     bool bet_detect = false;
-
+                    
                     for (int i = 0; i < _jo_count.Count(); i++)
                     {
                         Application.DoEvents();
@@ -1714,6 +1714,7 @@ namespace LD_Cronos_Data
                         if (yesterday_date == _date.ToString())
                         {
                             bet_detect = true;
+                            
                             // -----
                             JToken _name = _jo.SelectToken("$.bets[" + i + "].name").ToString();
                             string _file_name = _name.ToString().Remove(18, 3);
